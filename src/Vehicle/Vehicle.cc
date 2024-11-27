@@ -1665,6 +1665,12 @@ void Vehicle::setFlightMode(const QString& flightMode)
                                            newBaseMode,
                                            custom_mode);
             sendMessageOnLinkThreadSafe(sharedLink.get(), msg);
+
+            uint8_t tmp_main_mode = custom_mode >> 16;
+            sendMavCommand(defaultComponentId(),
+                            (MAV_CMD)10,
+                            true, //show error if fails
+                            tmp_main_mode);
         }
     } else {
         qCWarning(VehicleLog) << "FirmwarePlugin::setFlightMode failed, flightMode:" << flightMode;

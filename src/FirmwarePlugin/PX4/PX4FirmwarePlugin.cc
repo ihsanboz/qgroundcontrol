@@ -32,15 +32,12 @@ PX4FirmwarePluginInstanceData::PX4FirmwarePluginInstanceData(QObject* parent)
 }
 
 PX4FirmwarePlugin::PX4FirmwarePlugin()
-    : _manualFlightMode     (tr("Manual"))
-    , _acroFlightMode       (tr("Acro"))
+    : _acroFlightMode       (tr("Acro"))
     , _stabilizedFlightMode (tr("Stabilized"))
     , _rattitudeFlightMode  (tr("Rattitude"))
     , _altCtlFlightMode     (tr("Altitude"))
     , _posCtlFlightMode     (tr("Position"))
     , _offboardFlightMode   (tr("Offboard"))
-    , _readyFlightMode      (tr("Ready"))
-    , _takeoffFlightMode    (tr("Takeoff"))
     , _holdFlightMode       (tr("Hold"))
     , _missionFlightMode    (tr("Mission"))
     , _rtlFlightMode        (tr("Return"))
@@ -50,6 +47,12 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
     , _followMeFlightMode   (tr("Follow Me"))
     , _simpleFlightMode     (tr("Simple"))
     , _orbitFlightMode      (tr("Orbit"))
+    , _readyFlightMode      (tr("READY"))
+    , _startupFlightMode    (tr("STARTUP"))
+    , _takeoffFlightMode    (tr("TAKEOFF"))
+    , _hoverFlightMode      (tr("HOVER"))
+    , _manualFlightMode     (tr("MANUAL"))
+    , _landFlightMode       (tr("LAND"))
 {
     qmlRegisterType<PX4SimpleFlightModesController>     ("QGroundControl.Controllers", 1, 0, "PX4SimpleFlightModesController");
     qmlRegisterType<AirframeComponentController>        ("QGroundControl.Controllers", 1, 0, "AirframeComponentController");
@@ -66,29 +69,31 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
 
     static const struct Modes2Name rgModes2Name[] = {
         //main_mode                         sub_mode                                canBeSet  FW      MC
-        { PX4_CUSTOM_MAIN_MODE_MANUAL,      0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_STABILIZED,  0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_ACRO,        0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_RATTITUDE,   0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_ALTCTL,      0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    0,                                      true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_SIMPLE,      0,                                      false,  false,  true },
-        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL,      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_ORBIT,       false,  false,   false },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LOITER,        true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_MISSION,       true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTL,           true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET, true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LAND,          false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND,      true,  false,  true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_READY,         false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,          false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF,       false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_STABILIZED,  0,                                      false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_ACRO,        0,                                      false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_RATTITUDE,   0,                                      false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_ALTCTL,      0,                                      false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    0,                                      false,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_SIMPLE,      0,                                      false,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL,      false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_ORBIT,       false,   false,  false },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LOITER,        false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_MISSION,       false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTL,           false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET, false,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LAND,          false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND,      false,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,          false,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_READY,       0,                                      true,    true,   true },
+        { PX4_CUSTOM_MAIN_MODE_STARTUP,     0,                                      true,    true,   true },
+        { PX4_CUSTOM_MAIN_MODE_TAKEOFF,     0,                                      true,    true,   true },
+        { PX4_CUSTOM_MAIN_MODE_HOVER,       0,                                      true,    true,   true },
+        { PX4_CUSTOM_MAIN_MODE_MANUAL,      0,                                      true,    true,   true },
+        { PX4_CUSTOM_MAIN_MODE_LAND,        0,                                      true,    true,   true },
     };
 
     // Must be in same order as above structure
     const QString* rgModeNames[] = {
-        &_manualFlightMode,
         &_stabilizedFlightMode,
         &_acroFlightMode,
         &_rattitudeFlightMode,
@@ -103,9 +108,13 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         &_followMeFlightMode,
         &_landingFlightMode,
         &_preclandFlightMode,
-        &_readyFlightMode,
         &_rtgsFlightMode,
+        &_readyFlightMode,
+        &_startupFlightMode,
         &_takeoffFlightMode,
+        &_hoverFlightMode,
+        &_manualFlightMode,
+        &_landFlightMode,
     };
 
     // Convert static information to dynamic list. This allows for plugin override class to manipulate list.
