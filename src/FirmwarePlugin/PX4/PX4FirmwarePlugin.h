@@ -114,6 +114,7 @@ protected:
     QString _manualFlightMode;
     QString _landFlightMode;
 
+
 private slots:
     void _mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle);
 
