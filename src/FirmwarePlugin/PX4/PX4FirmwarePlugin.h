@@ -92,15 +92,12 @@ protected:
     // names may change.
 
     // If plugin superclass wants to change a mode name, then set a new name for the flight mode in the superclass constructor
-    QString _manualFlightMode;
     QString _acroFlightMode;
     QString _stabilizedFlightMode;
     QString _rattitudeFlightMode;
     QString _altCtlFlightMode;
     QString _posCtlFlightMode;
     QString _offboardFlightMode;
-    QString _readyFlightMode;
-    QString _takeoffFlightMode;
     QString _holdFlightMode;
     QString _missionFlightMode;
     QString _rtlFlightMode;
@@ -110,6 +107,13 @@ protected:
     QString _followMeFlightMode;
     QString _simpleFlightMode;
     QString _orbitFlightMode;
+    QString _readyFlightMode;
+    QString _startupFlightMode;
+    QString _takeoffFlightMode;
+    QString _hoverFlightMode;
+    QString _manualFlightMode;
+    QString _landFlightMode;
+
 
 private slots:
     void _mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle);
